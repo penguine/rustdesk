@@ -88,15 +88,15 @@ jobs:
       - name: Build rustdesk
         run: python3 .\build.py --portable --hwcodec --flutter
 
-      - name: Sign rustdesk files
-        uses: GermanBluefox/code-sign-action@v7
-        with:
-          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
-          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
-          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
-          # certificatename: '${{ secrets.CERTNAME }}'
-          folder: './flutter/build/windows/runner/Release/'
-          recursive: true
+ #     - name: Sign rustdesk files
+ #       uses: GermanBluefox/code-sign-action@v7
+ #       with:
+ #         certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
+ #         password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+ #         certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
+ #         # certificatename: '${{ secrets.CERTNAME }}'
+ #         folder: './flutter/build/windows/runner/Release/'
+ #         recursive: true
 
       - name: Build self-extracted executable
         shell: bash
@@ -114,15 +114,15 @@ jobs:
       #         mv "$name" ./SignOutput/"${name%%-install.exe}-${{ matrix.job.target }}.exe"
       #     done
 
-      - name: Sign rustdesk self-extracted file
-        uses: GermanBluefox/code-sign-action@v7
-        with:
-          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
-          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
-          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
-          # certificatename: '${{ secrets.WINDOWS_PFX_NAME }}'
-          folder: './SignOutput'
-          recursive: false
+#      - name: Sign rustdesk self-extracted file
+#        uses: GermanBluefox/code-sign-action@v7
+#        with:
+#          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
+#          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+#          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
+#          # certificatename: '${{ secrets.WINDOWS_PFX_NAME }}'
+#          folder: './SignOutput'
+#          recursive: false
 
       - name: Publish Release
         uses: softprops/action-gh-release@v1
@@ -151,11 +151,11 @@ jobs:
       - name: Import the codesign cert
         if: env.MACOS_P12_BASE64 != null
         uses: apple-actions/import-codesign-certs@v1
-        with: 
+        with:
           p12-file-base64: ${{ secrets.MACOS_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_P12_PASSWORD }}
           keychain: rustdesk
-      
+
       - name: Check sign and import sign key
         if: env.MACOS_P12_BASE64 != null
         run: |
@@ -170,7 +170,7 @@ jobs:
           fileName: rustdesk.json
           fileDir: ${{ github.workspace }}
           encodedString: ${{ secrets.MACOS_NOTARIZE_JSON }}
-          
+
       - name: Install rcodesign tool
         if: env.MACOS_P12_BASE64 != null
         shell: bash
@@ -541,7 +541,7 @@ jobs:
           popd
           mkdir -p signed-apk; pushd signed-apk
           mv ../rustdesk-${{ env.VERSION }}-${{ matrix.job.target }}-release.apk .
-      
+
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
         if: env.ANDROID_SIGNING_KEY != null
@@ -1085,7 +1085,7 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
           files: |
             rustdesk-${{ env.VERSION }}-${{ matrix.job.target }}-${{ matrix.job.os }}.deb
-      
+
       - name: Build appimage package
         if: ${{ matrix.job.extra-build-features == 'appimage' }}
         shell: bash
